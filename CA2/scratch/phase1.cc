@@ -14,10 +14,10 @@ const int NUMBER_OF_STATIONS = 5;
 const double DISTANCE_FROM_AP = 5.0;
 const uint16_t PORT_NUMBER = 9;
 const double SIMULATION_TIME = 10.0;
-const double PACKET_INTERVAL = 0.5;
-const uint32_t MAX_PACKETS = 20;
-const int LARGE_PACKET_SIZE = 1024;
-const int SMALL_PACKET_SIZE = 512;
+const double PACKET_INTERVAL = 0.5;         
+const uint32_t MAX_PACKETS = 20;            
+const int LARGE_PACKET_SIZE = 1024;         // 1st, 3rd, 5th STA
+const int SMALL_PACKET_SIZE = 512;          // 2nd, 4th STA
 const std::string SSID_NAME = "wifi5-network";
 const std::string IP_BASE = "192.168.1.0";
 const std::string IP_MASK = "255.255.255.0";
@@ -32,7 +32,10 @@ SetupWifiNetwork(NodeContainer &stationNodes, NodeContainer &APNode)
 
     // MAC layer init - Wi-Fi 5 (802.11ac)
     WifiHelper wifi;
+    // In Phase 1 SetupWifiNetwork:
     wifi.SetStandard(WIFI_STANDARD_80211ac);
+    // Add this:
+    physicalLayer.Set("ChannelSettings", StringValue("{38, 40, BAND_5GHZ, 0}"));
 
     // Configure AP
     WifiMacHelper mac;
@@ -178,18 +181,21 @@ void DisplayFlowStatistics(Ptr<FlowMonitor> flowMonitor, FlowMonitorHelper &flow
             avgDelay = flow.second.delaySum.GetSeconds() / flow.second.rxPackets;
         }
 
-        double lostPackets = flow.second.lostPackets;
+        
         double txPackets = flow.second.txPackets;
+        double rxPackets = flow.second.rxPackets;
+        double trueLostPackets = txPackets - rxPackets; 
+        
         double lossPercent = 0.0;
         if (txPackets > 0)
         {
-            lossPercent = lostPackets / txPackets * 100.0;
+            lossPercent = (trueLostPackets / txPackets) * 100.0;
         }
 
         std::cout << "Flow: " << t.sourceAddress << " -> " << t.destinationAddress << std::endl;
         std::cout << "  Sent: " << txPackets << " packets" << std::endl;
-        std::cout << "  Received: " << flow.second.rxPackets << " packets" << std::endl;
-        std::cout << "  Lost: " << lostPackets << " (" << lossPercent << "%)" << std::endl;
+        std::cout << "  Received: " << rxPackets << " packets" << std::endl;
+        std::cout << "  Lost: " << trueLostPackets << " (" << lossPercent << "%)" << std::endl;
         std::cout << "  Throughput: " << throughput << " kbps" << std::endl;
         std::cout << "  Avg Delay: " << avgDelay * 1000.0 << " ms" << std::endl;
         std::cout << std::endl;
@@ -224,8 +230,8 @@ void DisplayFlowStatistics(Ptr<FlowMonitor> flowMonitor, FlowMonitorHelper &flow
 }
 int main(int argc, char *argv[])
 {
-    LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
-    LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
+    // LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
+    // LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
 
     // Create Nodes
     NodeContainer stationNodes;
