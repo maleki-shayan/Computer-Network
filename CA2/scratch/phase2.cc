@@ -15,10 +15,17 @@ const int NUMBER_OF_STATIONS = 5;
 const double DISTANCE_FROM_AP = 5.0;
 const uint16_t PORT_NUMBER = 9;
 const double SIMULATION_TIME = 10.0;
+<<<<<<< HEAD
 const double PACKET_INTERVAL = 0.5;        
 const uint32_t MAX_PACKETS = 20;           
 const int LARGE_PACKET_SIZE = 1024;        // 1st, 3rd, 5th STA
 const int SMALL_PACKET_SIZE = 512;         // 2nd, 4th STA
+=======
+const double PACKET_INTERVAL = 0.01;        // 10ms
+const uint32_t MAX_PACKETS = 10000;
+const int LARGE_PACKET_SIZE = 1500;
+const int SMALL_PACKET_SIZE = 256;
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
 const int TRANMISSION_ANTENNA = 4;
 const int REACIEVER_ANTENNA = 4;
 const std::string SSID_NAME = "wifi6-network";
@@ -47,7 +54,11 @@ SetupWifiNetwork(NodeContainer &stationNodes, NodeContainer &APNode)
 
     wifi.SetRemoteStationManager("ns3::ConstantRateWifiManager",
                                  "DataMode", StringValue("HeMcs7"), // we set the highest speed for data mod to send the packets as fast as possible
+<<<<<<< HEAD
                                  "ControlMode", StringValue("HeMcs5")); // we set it to HeMCs5 because we need more reliablity for conltrol signals 
+=======
+                                 "ControlMode", StringValue("HeMcs7")); // we set it to HeMCs5 because we need more reliablity for conltrol signals 
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
 
     WifiMacHelper mac;
     Ssid ssid = Ssid(SSID_NAME);
@@ -58,7 +69,11 @@ SetupWifiNetwork(NodeContainer &stationNodes, NodeContainer &APNode)
                               "EnableUlOfdma", BooleanValue(true),
                               "EnableBsrp", BooleanValue(true),
                               "NStations", UintegerValue(8),       // up to 8 per MU frame
+<<<<<<< HEAD
                             //   "UlPsduSize", UintegerValue(256), // this line was commented to avoid fragmentation of 1024
+=======
+                              "UlPsduSize", UintegerValue(256),
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
                               "UseCentral26TonesRus", BooleanValue(false));
 
     NetDeviceContainer apDevice = wifi.Install(phy, mac, APNode);
@@ -68,6 +83,11 @@ SetupWifiNetwork(NodeContainer &stationNodes, NodeContainer &APNode)
     NetDeviceContainer stationDevices = wifi.Install(phy, mac, stationNodes);
 
     std::cout << "Installed Wi-Fi 6 (802.11ax) – 40 MHz channel" << std::endl;
+<<<<<<< HEAD
+=======
+    std::cout << "  Channel: 38, 40 MHz, 5 GHz" << std::endl;
+    std::cout << "  MCS: HeMcs7 | Max 8 STAs per MU frame" << std::endl;
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
 
     return std::make_pair(apDevice, stationDevices);
 }
@@ -164,6 +184,7 @@ void DisplayFlowStatistics(Ptr<FlowMonitor> flowMonitor, FlowMonitorHelper &flow
         Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow(flow.first);
         if (t.sourceAddress == apInterface.GetAddress(0))
             continue;
+<<<<<<< HEAD
         double txPackets = flow.second.txPackets;
         double rxPackets = flow.second.rxPackets;
         double trueLostPackets = txPackets - rxPackets;
@@ -182,6 +203,23 @@ void DisplayFlowStatistics(Ptr<FlowMonitor> flowMonitor, FlowMonitorHelper &flow
         std::cout << "  Tx: " << txPackets
                   << "  Rx: " << rxPackets
                   << "  Lost: " << trueLostPackets
+=======
+
+        double duration = flow.second.timeLastRxPacket.GetSeconds() -
+                          flow.second.timeFirstTxPacket.GetSeconds();
+        double throughput = (duration > 0 && flow.second.rxPackets > 0)
+            ? flow.second.rxBytes * 8.0 / duration / 1000.0 : 0.0;
+        double avgDelay = (flow.second.rxPackets > 0)
+            ? flow.second.delaySum.GetSeconds() / flow.second.rxPackets : 0.0;
+        double lossPercent = (flow.second.txPackets > 0)
+            ? flow.second.lostPackets / flow.second.txPackets * 100.0 : 0.0;
+
+        std::cout << "Flow " << numFlows + 1 << ": "
+                  << t.sourceAddress << " → " << t.destinationAddress << std::endl;
+        std::cout << "  Tx: " << flow.second.txPackets
+                  << "  Rx: " << flow.second.rxPackets
+                  << "  Lost: " << flow.second.lostPackets
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
                   << " (" << lossPercent << "%)" << std::endl;
         std::cout << "  Throughput: " << throughput << " kbps"
                   << "  Delay: " << avgDelay * 1000.0 << " ms\n" << std::endl;
@@ -193,6 +231,10 @@ void DisplayFlowStatistics(Ptr<FlowMonitor> flowMonitor, FlowMonitorHelper &flow
         totalDelay += avgDelay;
         totalTx += flow.second.txPackets;
         totalRx += flow.second.rxPackets;
+<<<<<<< HEAD
+=======
+        totalLost += flow.second.lostPackets;
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
         numFlows++;
     }
 
@@ -222,6 +264,10 @@ void DisplayFlowStatistics(Ptr<FlowMonitor> flowMonitor, FlowMonitorHelper &flow
 
 int main(int argc, char *argv[])
 {
+<<<<<<< HEAD
+=======
+    // Turn OFF the verbose UDP logging (it floods and may affect timing)
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
     // LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
     // LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
 
@@ -231,7 +277,11 @@ int main(int argc, char *argv[])
     APNode.Create(1);
 
     std::cout << "\n╔══════════════════════════════════════════╗" << std::endl;
+<<<<<<< HEAD
     std::cout << "║   Wi‑Fi 6 (802.11ax) – Phase 2           ║" << std::endl;
+=======
+    std::cout << "║   Wi‑Fi 6 (802.11ax) – Phase 2          ║" << std::endl;
+>>>>>>> 07d97cdd5dadb05f21e7d9ad33ddc2cb659c2e24
     std::cout << "║   OFDMA + MU‑MIMO                        ║" << std::endl;
     std::cout << "╚══════════════════════════════════════════╝\n" << std::endl;
     std::cout << "Stations: " << stationNodes.GetN() << " | AP: " << APNode.GetN() << std::endl;
