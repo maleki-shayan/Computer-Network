@@ -1,0 +1,84 @@
+# Local editor / operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# C/C++ build products (including the former CA1 directory named "1")
+build/
+*.o
+*.obj
+*.exe
+*.out
+*.d
+/CA4/Phase*/sender
+/CA4/Phase*/receiver
+
+# Python environments, caches, and local configuration
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# CA1 user-generated transfer data
+/CA1/uploaded files/
+/CA1/downloaded files/
+
+# CA2 generated training output; retain source and reports
+/CA2/**/runs/
+/CA2/**/*.pt
+/CA2/**/*.pth
+
+# CA3 external router and VM images (do not ignore .bin repository-wide)
+/CA3/**/*.bin
+/CA3/**/*.image
+/CA3/**/*.img
+/CA3/**/*.iso
+/CA3/**/*.qcow2
+/CA3/**/*.vmdk
+/CA3/**/*.vdi
+/CA3/**/*.vhd
+/CA3/**/*.vhdx
+
+# CA3 Dynamips runtime files: preserve device startup configurations
+/CA3/**/project-files/dynamips/*/*
+!/CA3/**/project-files/dynamips/*/configs/
+/CA3/**/project-files/dynamips/*/configs/*
+!/CA3/**/project-files/dynamips/*/configs/*_startup-config.cfg
+
+# CA3 VPCS runtime files: preserve saved host configuration when recovered
+/CA3/**/project-files/vpcs/*/*
+!/CA3/**/project-files/vpcs/*/startup.vpc
+/CA3/**/project-files/captures/
+/CA3/**/snapshots/
+/CA3/**/*.gns3.backup
+/CA3/**/*.gns3.lock
+
+# CA3 LaTeX compilation output; retain .tex, figures, and final report.pdf
+/CA3/report/*.aux
+/CA3/report/*.log
+/CA3/report/*.out
+/CA3/report/*.toc
+/CA3/report/*.lof
+/CA3/report/*.lot
+/CA3/report/*.fls
+/CA3/report/*.fdb_latexmk
+/CA3/report/*.synctex.gz
+/CA3/report/*.xdv
+# Verified byte-identical to CA3/report.pdf at review time
+/CA3/report/template.pdf
+
+# CA4 regenerated executables, transfer outputs, and experiment results
+/CA4/Phase*/results/
+/CA4/Phase*/logs/
+/CA4/Phase*/sample_output.txt
+/CA4/Phase*/sample_output.bin
+/CA4/Phase5/sample_input.bin
+/CA4/Phase6/sample_input.bin

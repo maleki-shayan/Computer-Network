@@ -1,0 +1,42 @@
+PHASE 5 TESTS
+
+Create the shared input file once:
+make sample
+
+TEST 1
+Set experiment.hpp to:
+const string TEST_NAME = "normal";
+const int LOSS_PERCENT = 0;
+const int ACK_DELAY_MS = 0;
+Run:
+make clean
+make test
+
+TEST 2
+Set experiment.hpp to:
+const string TEST_NAME = "medium";
+const int LOSS_PERCENT = 10;
+const int ACK_DELAY_MS = 50;
+Run:
+make clean
+make test
+
+TEST 3
+Set experiment.hpp to:
+const string TEST_NAME = "high";
+const int LOSS_PERCENT = 20;
+const int ACK_DELAY_MS = 100;
+Run:
+make clean
+make test
+
+Do not run make sample again between tests.
+Do not run make reset until the report is finished.
+
+Final result folders:
+results/phase5/normal
+results/phase5/medium
+results/phase5/high
+
+Combined metrics:
+results/phase5/comparison.csv
